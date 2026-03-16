@@ -12,6 +12,33 @@ st.set_page_config(
 )
 
 API_KEY = st.secrets["RYNE_API_KEY"]
+APP_PASSWORD = st.secrets["APP_PASSWORD"]
+
+# ── Password gate ──
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    st.markdown(
+        '<div style="display:flex;justify-content:center;align-items:center;min-height:80vh;">'
+        '<div style="text-align:center;max-width:360px;width:100%;">',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<h2 style="background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;'
+        '-webkit-text-fill-color:transparent;margin-bottom:0.25rem;">AI Text Tools</h2>'
+        '<p style="color:#64748b;font-size:0.85rem;margin-bottom:2rem;">Enter password to continue</p>',
+        unsafe_allow_html=True,
+    )
+    pwd = st.text_input("Password", type="password", label_visibility="collapsed", placeholder="Enter password...")
+    if st.button("Unlock", use_container_width=True):
+        if pwd == APP_PASSWORD:
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("Wrong password")
+    st.markdown("</div></div>", unsafe_allow_html=True)
+    st.stop()
 
 # ── Custom CSS for dark aesthetic ──
 st.markdown("""
